@@ -1,13 +1,13 @@
 name = "gleescript"
 version = "1.0.0"
-
-# Fill out these fields if you intend to generate HTML documentation or publish
-# your project to the Hex package manager.
-#
-# description = ""
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "username", repo = "project" }
-# links = [{ title = "Website", href = "https://gleam.run" }]
+description = "Bundle your Gleam-on-Erlang project into an escript, a single executable file!"
+licences = ["Apache-2.0"]
+repository = { type = "github", user = "lpil", repo = "gleescript" }
+links = [
+  { title = "Website", href = "https://gleam.run" },
+  { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
+]
+gleam = ">= 0.33.0"
 
 [dependencies]
 gleam_stdlib = "~> 0.32"

@@ -1,5 +1,4 @@
 // TODO: Do not include dev deps
-// TODO: Do not clobber an existing file
 
 import filepath
 import gleam/dynamic.{type Dynamic}
@@ -17,7 +16,11 @@ const build = "build/dev/erlang"
 pub fn main() {
   case run() {
     Ok(_) -> Nil
-    Error(error) -> panic as snag.pretty_print(error)
+
+    Error(error) -> {
+      io.println_error(snag.pretty_print(error))
+      shutdown(1)
+    }
   }
 }
 
@@ -61,10 +64,15 @@ pub fn run() -> snag.Result(Nil) {
     ])
 
   let assert Ok(result) = dynamic.result(Ok, Ok)(result)
-  result
-  |> result.replace(Nil)
-  |> snag_inspect_error
-  |> snag.context("Failed to build escript")
+  use _ <- result.try(
+    result
+    |> snag_inspect_error
+    |> snag.context("Failed to build escript"),
+  )
+
+  io.println("  \u{001b}[35mGenerated\u{001b}[0m ./" <> config.package_name)
+
+  Ok(Nil)
 }
 
 fn locate_beam_files() -> snag.Result(List(String)) {
@@ -126,3 +134,6 @@ fn erlang_escript_create(
   file: Charlist,
   sections: List(ErlangOption),
 ) -> Dynamic
+
+@external(erlang, "init", "stop")
+fn shutdown(status: Int) -> a
