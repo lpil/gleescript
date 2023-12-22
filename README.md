@@ -1,12 +1,11 @@
 # gleescript
 
 Bundle your Gleam-on-Erlang project into an escript, a single executable file!
+You may find this useful for writing command line programs and scripts in
+Gleam.
 
 [![Package Version](https://img.shields.io/hexpm/v/gleescript)](https://hex.pm/packages/gleescript)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/gleescript/)
-
-You may find this useful for writing command line programs and scripts in
-Gleam.
 
 ## Usage
 
