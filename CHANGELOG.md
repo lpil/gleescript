@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.0 - 2024-05-24
+
+- Generated escript files are now executable by default.
+
 ## v1.1.0 - 2024-05-24
 
 - OTP applications are now automatically started if the program depends on them.

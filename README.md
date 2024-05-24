@@ -20,7 +20,6 @@ gleam run -m gleescript
 #    Running gleescript.main
 #  Generated ./your_project
 
-chmod +x ./your_project
 ./your_project
 # Hello from your_project!
 ```
