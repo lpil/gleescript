@@ -3,8 +3,8 @@
 import filepath
 import gleam/dynamic.{type Dynamic}
 import gleam/erlang/charlist.{type Charlist}
-import gleam/list
 import gleam/io
+import gleam/list
 import gleam/result
 import gleam/string
 import simplifile
@@ -70,7 +70,7 @@ pub fn run() -> snag.Result(Nil) {
     |> snag.context("Failed to build escript"),
   )
 
-  io.println("  \u{001b}[35mGenerated\u{001b}[0m ./" <> config.package_name)
+  io.println("  \u{001b}[95mGenerated\u{001b}[0m ./" <> config.package_name)
 
   Ok(Nil)
 }
@@ -83,11 +83,15 @@ fn locate_beam_files() -> snag.Result(List(String)) {
   )
 
   files
-  |> list.filter(fn(f) {
-    // The @@ modules belong to the Gleam build tool
-    !string.contains(f, "@@")
-    && { string.ends_with(f, ".beam") || string.ends_with(f, ".app") }
-  })
+  |> list.filter(
+    fn(
+      f,
+      // The @@ modules belong to the Gleam build tool
+    ) {
+      !string.contains(f, "@@")
+      && { string.ends_with(f, ".beam") || string.ends_with(f, ".app") }
+    },
+  )
   |> Ok
 }
 
