@@ -1,5 +1,5 @@
 name = "gleescript"
-version = "1.0.1"
+version = "1.1.0"
 description = "Bundle your Gleam-on-Erlang project into an escript, a single executable file!"
 licences = ["Apache-2.0"]
 repository = { type = "github", user = "lpil", repo = "gleescript" }

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.1.0 - 2024-05-24
 
 - OTP applications are now automatically started if the program depends on them.
 - The output colour has been corrected to match the Gleam build tool's output.
