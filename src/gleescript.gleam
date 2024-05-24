@@ -70,6 +70,13 @@ pub fn run() -> snag.Result(Nil) {
     |> snag.context("Failed to build escript"),
   )
 
+  let name = config.package_name
+  use _ <- result.try(
+    simplifile.set_permissions_octal(name, 0o777)
+    |> snag_inspect_error
+    |> snag.context("Failed to make ./" <> name <> " executable"),
+  )
+
   io.println("  \u{001b}[95mGenerated\u{001b}[0m ./" <> config.package_name)
 
   Ok(Nil)
