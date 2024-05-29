@@ -29,8 +29,8 @@ type Config {
   Config(package_name: String, target_dir: String)
 }
 
-pub fn get_target_dir() -> String {
-  let target = case argv.load().arguments {
+pub fn get_target_dir(args: List(String)) -> String {
+  let target = case args {
     ["--target-dir", folder] -> folder
     _ -> "./"
   }
@@ -125,9 +125,7 @@ fn locate_beam_files() -> snag.Result(List(String)) {
 }
 
 fn load_config() -> snag.Result(Config) {
-  io.println("Getting target dir:")
-  let target_dir = get_target_dir()
-  io.println(target_dir)
+  let target_dir = get_target_dir(argv.load().arguments)
 
   use text <- result.try(
     simplifile.read("gleam.toml")
