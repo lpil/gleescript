@@ -25,7 +25,7 @@ pub fn main() {
 }
 
 type Config {
-  Config(package_name: String)
+  Config(package_name: String, target_dir: String)
 }
 
 pub fn run() -> snag.Result(Nil) {
@@ -51,17 +51,34 @@ pub fn run() -> snag.Result(Nil) {
         |> snag_inspect_error
         |> snag.context("Failed to read " <> f),
       )
+
       #(name, content)
     }),
   )
 
+  use _ <- result.try(case simplifile.verify_is_directory(config.target_dir) {
+    Ok(False) -> {
+      simplifile.create_directory_all(config.target_dir)
+      |> snag_inspect_error
+      |> snag.context("Failed to create " <> config.target_dir <> " directory")
+    }
+    Error(e) ->
+      Error(e)
+      |> snag_inspect_error
+      |> snag.context("Failed to read " <> config.target_dir <> " directory")
+    Ok(True) -> Ok(Nil)
+  })
+
   let result =
-    erlang_escript_create(charlist.from_string(config.package_name), [
-      Shebang,
-      Comment(charlist.from_string("")),
-      EmuArgs(charlist.from_string(emu_args)),
-      Archive(files, []),
-    ])
+    erlang_escript_create(
+      charlist.from_string(config.target_dir <> config.package_name),
+      [
+        Shebang,
+        Comment(charlist.from_string("")),
+        EmuArgs(charlist.from_string(emu_args)),
+        Archive(files, []),
+      ],
+    )
 
   let assert Ok(result) = dynamic.result(Ok, Ok)(result)
   use _ <- result.try(
@@ -70,14 +87,18 @@ pub fn run() -> snag.Result(Nil) {
     |> snag.context("Failed to build escript"),
   )
 
-  let name = config.package_name
+  let name = config.target_dir <> config.package_name
   use _ <- result.try(
     simplifile.set_permissions_octal(name, 0o777)
     |> snag_inspect_error
     |> snag.context("Failed to make ./" <> name <> " executable"),
   )
 
-  io.println("  \u{001b}[95mGenerated\u{001b}[0m ./" <> config.package_name)
+  io.println(
+    "  \u{001b}[95mGenerated\u{001b}[0m "
+    <> config.target_dir
+    <> config.package_name,
+  )
 
   Ok(Nil)
 }
@@ -121,7 +142,12 @@ fn load_config() -> snag.Result(Config) {
     |> snag.context("Failed to get package name from gleam.toml"),
   )
 
-  Ok(Config(package_name: package_name))
+  let target_dir = case tom.get_string(config, ["build", "target-dir"]) {
+    Ok(target) -> "./" <> target <> "/"
+    Error(_) -> "./"
+  }
+
+  Ok(Config(package_name: package_name, target_dir: target_dir))
 }
 
 fn snag_inspect_error(result: Result(t, e)) -> snag.Result(t) {
