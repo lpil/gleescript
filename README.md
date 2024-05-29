@@ -26,12 +26,7 @@ gleam run -m gleescript
 
 ### Configuration
 
-You can configure the output directory of the executable by adding the following to your `gleam.toml`
-
-```toml
-[build]
-target-dir="bin"
-```
+You can optionally configure the target directory of the executable by adding `--target-dir my_directory`, where `my_directory` is where you want to store the executable.
 
 The escript can run on any computer that has the Erlang VM installed. Older
 versions of the virtual machine may not support the newer bytecode contained in
@@ -42,4 +37,4 @@ See the [Erlang escript documentation][1] for more information.
 
 [1]: https://www.erlang.org/doc/man/escript.html
 
-Have fun!
+Havefun!

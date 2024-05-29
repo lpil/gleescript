@@ -1,5 +1,6 @@
 // TODO: Do not include dev deps
 
+import argv
 import filepath
 import gleam/dynamic.{type Dynamic}
 import gleam/erlang/charlist.{type Charlist}
@@ -26,6 +27,17 @@ pub fn main() {
 
 type Config {
   Config(package_name: String, target_dir: String)
+}
+
+pub fn get_target_dir() -> String {
+  let target = case argv.load().arguments {
+    ["--target-dir", folder] -> folder
+    _ -> "./"
+  }
+  case string.last(target) {
+    Ok("/") -> target
+    _ -> target <> "/"
+  }
 }
 
 pub fn run() -> snag.Result(Nil) {
@@ -56,18 +68,11 @@ pub fn run() -> snag.Result(Nil) {
     }),
   )
 
-  use _ <- result.try(case simplifile.verify_is_directory(config.target_dir) {
-    Ok(False) -> {
-      simplifile.create_directory_all(config.target_dir)
-      |> snag_inspect_error
-      |> snag.context("Failed to create " <> config.target_dir <> " directory")
-    }
-    Error(e) ->
-      Error(e)
-      |> snag_inspect_error
-      |> snag.context("Failed to read " <> config.target_dir <> " directory")
-    Ok(True) -> Ok(Nil)
-  })
+  use _ <- result.try(
+    simplifile.create_directory_all(config.target_dir)
+    |> snag_inspect_error
+    |> snag.context("Failed to create " <> config.target_dir <> " directory"),
+  )
 
   let result =
     erlang_escript_create(
@@ -91,7 +96,7 @@ pub fn run() -> snag.Result(Nil) {
   use _ <- result.try(
     simplifile.set_permissions_octal(name, 0o777)
     |> snag_inspect_error
-    |> snag.context("Failed to make ./" <> name <> " executable"),
+    |> snag.context("Failed to make " <> name <> " executable"),
   )
 
   io.println(
@@ -111,19 +116,19 @@ fn locate_beam_files() -> snag.Result(List(String)) {
   )
 
   files
-  |> list.filter(
-    fn(
-      f,
-      // The @@ modules belong to the Gleam build tool
-    ) {
-      !string.contains(f, "@@")
-      && { string.ends_with(f, ".beam") || string.ends_with(f, ".app") }
-    },
-  )
+  |> list.filter(fn(f) {
+    // The @@ modules belong to the Gleam build tool
+    !string.contains(f, "@@")
+    && { string.ends_with(f, ".beam") || string.ends_with(f, ".app") }
+  })
   |> Ok
 }
 
 fn load_config() -> snag.Result(Config) {
+  io.println("Getting target dir:")
+  let target_dir = get_target_dir()
+  io.println(target_dir)
+
   use text <- result.try(
     simplifile.read("gleam.toml")
     |> snag_inspect_error
@@ -141,11 +146,6 @@ fn load_config() -> snag.Result(Config) {
     |> snag_inspect_error
     |> snag.context("Failed to get package name from gleam.toml"),
   )
-
-  let target_dir = case tom.get_string(config, ["build", "target-dir"]) {
-    Ok(target) -> "./" <> target <> "/"
-    Error(_) -> "./"
-  }
 
   Ok(Config(package_name: package_name, target_dir: target_dir))
 }
