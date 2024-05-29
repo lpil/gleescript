@@ -1,12 +1,17 @@
 import gleeunit
 import gleeunit/should
-
+import gleescript
 pub fn main() {
   gleeunit.main()
 }
 
 // gleeunit test functions end in `_test`
-pub fn hello_world_test() {
-  1
-  |> should.equal(1)
+pub fn arguments_parsed_correctly_test() {
+  ["--target-dir", "test"]
+  |> gleescript.get_target_dir
+  |> should.equal("test/")
+
+  []
+  |> gleescript.get_target_dir
+  |> should.equal("./")
 }
