@@ -21,3 +21,4 @@ jobs:
       - run: gleam deps download
       - run: gleam test
       - run: gleam format --check src test
+      - run: ./test.sh
