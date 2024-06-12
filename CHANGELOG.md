@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.0 - 2024-06-24
+
+- The `--out` flag can be used to write the escript to a specified directory.
+
 ## v1.2.0 - 2024-05-24
 
 - Generated escript files are now executable by default.

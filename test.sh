@@ -1,14 +1,20 @@
 #!/bin/sh
 
-DIRECTORY=test-dir
+set -eu
 
-rm -rf $DIRECTORY
+# Reset out artefacts
+rm -rf gleescript ./tmp
 
-gleam run -- --target-dir $DIRECTORY
+# No arguments
+gleam run -m gleescript
+./gleescript
 
-if [ ! -d $DIRECTORY ]; then
-	echo "Directory $DIRECTORY was not created"
-	exit 1
-fi
+# --out tmp/without-equals
+gleam run -m gleescript -- --out tmp/without-equals
+./tmp/without-equals/gleescript
 
-echo "Test passed!"
+# --out=tmp/with-equals
+gleam run -m gleescript -- --out=tmp/with-equals
+./tmp/with-equals/gleescript
+
+echo "Tests passed!"

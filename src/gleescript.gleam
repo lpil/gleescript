@@ -26,18 +26,7 @@ pub fn main() {
 }
 
 type Config {
-  Config(package_name: String, target_dir: String)
-}
-
-pub fn get_target_dir(args: List(String)) -> String {
-  let target = case args {
-    ["--target-dir", folder] -> folder
-    _ -> "./"
-  }
-  case string.last(target) {
-    Ok("/") -> target
-    _ -> target <> "/"
-  }
+  Config(package_name: String, out_dir: String)
 }
 
 pub fn run() -> snag.Result(Nil) {
@@ -69,14 +58,14 @@ pub fn run() -> snag.Result(Nil) {
   )
 
   use _ <- result.try(
-    simplifile.create_directory_all(config.target_dir)
+    simplifile.create_directory_all(config.out_dir)
     |> snag_inspect_error
-    |> snag.context("Failed to create " <> config.target_dir <> " directory"),
+    |> snag.context("Failed to create " <> config.out_dir <> " directory"),
   )
 
   let result =
     erlang_escript_create(
-      charlist.from_string(config.target_dir <> config.package_name),
+      charlist.from_string(config.out_dir <> config.package_name),
       [
         Shebang,
         Comment(charlist.from_string("")),
@@ -92,7 +81,7 @@ pub fn run() -> snag.Result(Nil) {
     |> snag.context("Failed to build escript"),
   )
 
-  let name = config.target_dir <> config.package_name
+  let name = config.out_dir <> config.package_name
   use _ <- result.try(
     simplifile.set_permissions_octal(name, 0o777)
     |> snag_inspect_error
@@ -101,7 +90,7 @@ pub fn run() -> snag.Result(Nil) {
 
   io.println(
     "  \u{001b}[95mGenerated\u{001b}[0m "
-    <> config.target_dir
+    <> config.out_dir
     <> config.package_name,
   )
 
@@ -125,7 +114,7 @@ fn locate_beam_files() -> snag.Result(List(String)) {
 }
 
 fn load_config() -> snag.Result(Config) {
-  let target_dir = get_target_dir(argv.load().arguments)
+  let out_dir = get_out_dir(argv.load().arguments)
 
   use text <- result.try(
     simplifile.read("gleam.toml")
@@ -145,7 +134,7 @@ fn load_config() -> snag.Result(Config) {
     |> snag.context("Failed to get package name from gleam.toml"),
   )
 
-  Ok(Config(package_name: package_name, target_dir: target_dir))
+  Ok(Config(package_name: package_name, out_dir: out_dir))
 }
 
 fn snag_inspect_error(result: Result(t, e)) -> snag.Result(t) {
@@ -172,3 +161,14 @@ fn erlang_escript_create(
 
 @external(erlang, "init", "stop")
 fn shutdown(status: Int) -> a
+
+fn get_out_dir(args: List(String)) -> String {
+  let out = case args {
+    ["--out", folder] | ["--out=" <> folder] -> folder
+    _ -> "./"
+  }
+  case string.last(out) {
+    Ok("/") -> out
+    _ -> out <> "/"
+  }
+}
