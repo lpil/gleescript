@@ -1,6 +1,7 @@
+import gleescript
 import gleeunit
 import gleeunit/should
-import gleescript
+
 pub fn main() {
   gleeunit.main()
 }
