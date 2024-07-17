@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.4.0 - 2024-07-17
+
+- The `simplifile` version requirement has been relaxed to permit v3.*.
+
 ## v1.3.0 - 2024-06-24
 
 - The `--out` flag can be used to write the escript to a specified directory.
