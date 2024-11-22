@@ -14,9 +14,8 @@ generate an escript.
 
 ```sh
 gleam add gleescript
+gleam build
 gleam run -m gleescript
-#  Compiling your_project
-#   Compiled in 0.26s
 #    Running gleescript.main
 #  Generated ./your_project
 
@@ -39,8 +38,6 @@ can be used to write to a different directory.
 
 ```sh
 gleam run -m gleescript -- --out=./some/directory
-#  Compiling your_project
-#   Compiled in 0.26s
 #    Running gleescript.main
 #  Generated ./some/directory/your_project
 
