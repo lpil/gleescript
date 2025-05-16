@@ -3,6 +3,7 @@
 import argv
 import filepath
 import gleam/dynamic.{type Dynamic}
+import gleam/erlang/atom
 import gleam/erlang/charlist.{type Charlist}
 import gleam/io
 import gleam/list
@@ -74,12 +75,15 @@ pub fn run() -> snag.Result(Nil) {
       ],
     )
 
-  let assert Ok(result) = dynamic.result(Ok, Ok)(result)
-  use _ <- result.try(
-    result
-    |> snag_inspect_error
-    |> snag.context("Failed to build escript"),
-  )
+  use _ <- result.try(case result == erase(atom.create("ok")) {
+    True -> Ok(Nil)
+    False ->
+      result
+      |> string.inspect
+      |> snag.new
+      |> Error
+      |> snag.context("Failed to build escript")
+  })
 
   let name = config.out_dir <> config.package_name
   use _ <- result.try(
@@ -172,3 +176,6 @@ fn get_out_dir(args: List(String)) -> String {
     _ -> out <> "/"
   }
 }
+
+@external(erlang, "gleam@function", "identity")
+fn erase(x: anything) -> Dynamic

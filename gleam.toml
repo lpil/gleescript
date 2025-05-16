@@ -1,5 +1,5 @@
 name = "gleescript"
-version = "1.5.0"
+version = "1.5.1"
 description = "Bundle your Gleam-on-Erlang project into an escript, a single executable file!"
 licences = ["Apache-2.0"]
 repository = { type = "github", user = "lpil", repo = "gleescript" }
@@ -10,13 +10,13 @@ links = [
 gleam = ">= 1.7.0"
 
 [dependencies]
-gleam_stdlib = ">= 0.32.0 and < 2.0.0"
-gleam_erlang = ">= 0.23.0 and < 2.0.0"
+gleam_stdlib = ">= 0.60.0 and < 2.0.0"
+gleam_erlang = ">= 1.0.0-rc1 and < 2.0.0"
 tom = ">= 0.3.0 and < 2.0.0"
 snag = ">= 0.3.0 and < 2.0.0"
 filepath = ">= 0.1.0 and < 2.0.0"
 argv = ">= 1.0.2 and < 2.0.0"
-simplifile = ">= 1.0.0 and < 3.0.0"
+simplifile = ">= 1.0.0 and < 4.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0"
