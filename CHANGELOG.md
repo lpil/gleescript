@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5.0 - 2025-05-16
+
+- Updated for latest `gleam_stdlib`.
+
 ## v1.4.0 - 2024-07-17
 
 - The `simplifile` version requirement has been relaxed to permit v3.*.
