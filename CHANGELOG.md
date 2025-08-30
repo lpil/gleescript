@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5.2 - 2025-08-30
+
+- Relaxed `tom` requirement to accept v3.
+
 ## v1.5.1 - 2025-05-16
 
 - Fixed broken release of v1.5.0.
