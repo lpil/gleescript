@@ -1,5 +1,7 @@
 # gleescript
 
+This package is redundant with Gleam v1.17's `gleam export escript` feature.
+
 Bundle your Gleam-on-Erlang project into an escript, a single executable file!
 You may find this useful for writing command line programs and scripts in
 Gleam.
